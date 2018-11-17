@@ -189,21 +189,6 @@ namespace NTcp
                         }
                     }
                 }
-                catch (SocketException ex)
-                {
-#if DEBUG
-                    if (ex.ErrorCode == 10004)
-                    {
-                        // WSAEINTR/WSACancelBlockingCall
-                        Console.WriteLine("Warn: " + ex.Message);
-                    }
-                    else
-                    {
-                        Console.WriteLine("ErrorCode: " + ex.ErrorCode);
-                        Console.WriteLine(ex);
-                    }
-#endif
-                }
                 catch (Exception ex)
                 {
 #if DEBUG
@@ -228,6 +213,9 @@ namespace NTcp
 #endif
 
                     TcpClient client = listener.AcceptTcpClient();
+#if DEBUG
+                    Console.WriteLine("DEBUG: accepted.");
+#endif
                     if (OnConnected != null)
                     {
                         OnConnected.Invoke(client.Client.LocalEndPoint, client.Client.RemoteEndPoint);
@@ -238,19 +226,10 @@ namespace NTcp
                         clientList.Add(client);
                     }
                 }
-                catch (SocketException ex)
+                catch (ThreadAbortException ex)
                 {
 #if DEBUG
-                    if (ex.ErrorCode == 10004)
-                    {
-                        // WSAEINTR/WSACancelBlockingCall
-                        Console.WriteLine("Warn: " + ex.Message);
-                    }
-                    else
-                    {
-                        Console.WriteLine("ErrorCode: " + ex.ErrorCode);
-                        Console.WriteLine(ex);
-                    }
+                    Console.WriteLine("WARN: " + ex);
 #endif
                 }
                 catch (Exception ex)
