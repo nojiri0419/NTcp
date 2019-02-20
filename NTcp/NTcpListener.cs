@@ -114,15 +114,15 @@ namespace NTcp
 
         public void Stop()
         {
+            alive = false;
+
+            acceptor.Abort();
+
             if (listener != null)
             {
                 listener.Stop();
                 listener = null;
             }
-
-            alive = false;
-
-            acceptor.Abort();
 
             while (runner.IsAlive)
             {
